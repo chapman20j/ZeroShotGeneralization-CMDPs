@@ -1,0 +1,10 @@
+torch==2.6.0
+numpy==2.0.2
+matplotlib==3.10.0
+gymnasium[mujoco]==1.0.0
+tqdm==4.67.1
+pandas==2.2.3
+scipy==1.14.1
+seaborn==0.13.2
+ray[rllib,tune]==2.44.1
+msgpack-numpy==0.4.8
