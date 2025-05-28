@@ -3,7 +3,7 @@
 Trains an ant to run in a direction specified by the context.
 This is based on
     https://arxiv.org/pdf/2105.13524
-    https://github.com/suyoung-lee/LDM/blob/main/environments/mujoco/ant_dir.py
+    https://github.com/suyoung-lee/LDM/blob/main/environments/mujoco/ant_goal.py
 """
 
 
@@ -13,6 +13,8 @@ from gymnasium.spaces import Box
 
 
 class AntGoal(AntEnv):
+    context_low = np.array([-1.0, -1.0])
+    context_high = np.array([1.0, 1.0])
 
     def __init__(
         self,
@@ -27,6 +29,7 @@ class AntGoal(AntEnv):
         ), f"Context should be of shape (2,), but got: {context_values.shape}"
         kwargs["healthy_reward"] = healthy_reward
         kwargs["terminate_when_unhealthy"] = terminate_when_unhealthy
+        kwargs["exclude_current_positions_from_observation"] = False
         super().__init__(*args, **kwargs)
 
         obs_size = self.observation_space.shape[0]
@@ -94,7 +97,7 @@ class AntGoal(AntEnv):
             "reward_contact": -contact_cost,
             "reward_survive": healthy_reward,
             "dr_dcontext": drdp,
-            "dr_dnextobs": np.zeros(o),
+            "dr_dnextobs": np.concatenate([-drdp, np.zeros(o - 2)]),
         }
 
         return reward, reward_info

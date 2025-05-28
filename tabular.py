@@ -254,13 +254,12 @@ def tabular_cebe_approximation_error(
 
 
 if __name__ == "__main__":
-    verify = False
-
+    # Constants
     m, n = 5, 6
     gamma = 0.9
     p = 0.1
 
-    # Lets train stuff
+    # Set up functions
     pvar = sympy.symbols("p")
     rwfn0 = lambda m, n, p, penalty=100: make_reward0(m, n, p, penalty=penalty)
     rwfn1 = lambda m, n, p, penalty=100: make_reward1(m, n, p, penalty=penalty)

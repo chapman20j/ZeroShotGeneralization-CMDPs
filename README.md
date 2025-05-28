@@ -47,6 +47,7 @@ These commands should be run for the following environments:
 
 - `simple_dir`
 - `ant_dir`
+- `ant_goal`
 - `cart_goal`
 - `cheetah_vel`
 - `pen_goal`
