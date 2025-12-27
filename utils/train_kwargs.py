@@ -143,9 +143,9 @@ def get_ant_goal_config():
 
 
 def get_train_config(name):
-    if name == "simple_dir":
+    if name in ["simple_dir", "simple_dir_rand"]:
         return get_simple_dir_config()
-    elif name in ["pen", "pen_goal", "Pendulum-v1"]:
+    elif name in ["pen", "pen_goal", "Pendulum-v1", "pen_goal_ad"]:
         return get_pendulum_config()
     elif name in ["cart_goal", "CartPole-v1"]:
         return get_cartpole_config()

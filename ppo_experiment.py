@@ -13,20 +13,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import ray
 from ray import tune
+from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.utils.framework import try_import_torch
 from ray.rllib.utils.metrics import NUM_ENV_STEPS_SAMPLED_LIFETIME
 from ray.tune.registry import register_env
 from ray.tune.result import TRAINING_ITERATION
 
-import utils
-import utils.train_kwargs
 from environments.common import env_class_dict, env_lambda, get_env_config
 from utils.cse import SampleEnhanceConnector
 from utils.dr import GlobalDomainRandomizationCallback, LocalDomainRandomizationCallback
 from utils.evaluation import custom_eval_function_single_env_runner
 from utils.make_args import make_args
-from utils.rllib_dqn import DQNConfig
-from utils.rllib_sac import SACConfig
 from utils.train_kwargs import get_model_config
 
 torch, _ = try_import_torch()
@@ -42,10 +39,7 @@ if __name__ == "__main__":
 
     ray.init()
     env_class = env_class_dict.get(input_args.env, None)
-    if input_args.env in ["cart_goal", "CartPole-v5"]:
-        algo_config = DQNConfig
-    else:
-        algo_config = SACConfig
+    algo_config = PPOConfig
 
     # * Environment Setup
     if input_args.env in env_class_dict:
@@ -101,7 +95,8 @@ if __name__ == "__main__":
         )
 
     #! Train kwargs
-    train_kwargs = utils.train_kwargs.get_train_config(input_args.env)
+    train_kwargs = dict(lr=0.001, clip_param=0.2)
+
     #! Sample Enhancement
     if input_args.cse == 1:
         train_kwargs["learner_connector"] = (
@@ -112,7 +107,6 @@ if __name__ == "__main__":
                 action_mtd=input_args.se_action,
             )
         )
-        train_kwargs["include_infos"] = True
     elif input_args.cse == 2:
         train_kwargs["learner_connector"] = (
             lambda obs_sp, act_sp: SampleEnhanceConnector(
@@ -124,7 +118,6 @@ if __name__ == "__main__":
                 action_mtd=input_args.se_action,
             )
         )
-        train_kwargs["include_infos"] = True
 
     #! Custom evaluation
     base_config = base_config.training(**train_kwargs)

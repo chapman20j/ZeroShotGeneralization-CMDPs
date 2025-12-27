@@ -93,4 +93,12 @@ def make_args() -> argparse.Namespace:
         "--eval_iters", type=int, default=8, help="Number of evaluation iterations"
     )
 
+    # * Model args
+    parser.add_argument(
+        "--layers", type=int, default=2, help="Number of hidden layers in the model"
+    )
+    parser.add_argument(
+        "--width", type=int, default=256, help="Width of the hidden layers"
+    )
+
     return parser.parse_args()

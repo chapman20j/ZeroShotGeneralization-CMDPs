@@ -10,20 +10,24 @@ from environments.mujoco_context_envs.ant_dir import AntDir
 from environments.mujoco_context_envs.ant_goal import AntGoal
 from environments.mujoco_context_envs.cheetah_velocity import HalfcheetahVelocity
 from environments.ode_env import CartPoleGoalAnalytic, PendulumGoalAnalytic
-from environments.simple import SimpleDirection
+from environments.pen_goal_ad import PendulumGoalAD
+from environments.simple import SimpleDirection, SimpleDirectionStochastic
 
 env_class_dict = {
     "pen_goal": PendulumGoalAnalytic,
     "cart_goal": CartPoleGoalAnalytic,
     "simple_dir": SimpleDirection,
+    "simple_dir_rand": SimpleDirectionStochastic,
     "ant_dir": AntDir,
     "ant_goal": AntGoal,
     "cheetah_vel": HalfcheetahVelocity,
     "CartPole-v1": CartPoleEnv,
     "Pendulum-v1": PendulumEnv,
+    "pen_goal_ad": PendulumGoalAD,
 }
 time_limit_dict = {
     "simple_dir": 10,
+    "simple_dir_rand": 10,
     "pen_goal": 200,
     "cart_goal": 500,
     "ant_dir": 1000,
@@ -31,12 +35,13 @@ time_limit_dict = {
     "cheetah_vel": 1000,
     "Pendulum-v1": 200,
     "CartPole-v1": 500,
+    "pen_goal_ad": 200,
 }
 
 
 def env_lambda(name):
     time_limit = time_limit_dict.get(name, 1000)
-    if name in ["pen_goal", "cart_goal"]:
+    if name in ["pen_goal", "cart_goal", "pen_goal_ad"]:
         return lambda config: TimeLimit(
             env_class_dict[name](
                 config["context_values"],
@@ -79,7 +84,7 @@ def get_env_config(input_args: Namespace) -> dict:
                 ]
             ),
         }
-    elif input_args.env == "pen_goal":
+    elif input_args.env in ["pen_goal", "pen_goal_ad"]:
         env_config = {
             "context_values": np.array([2.0, 1.0, 1.0, 0.0]),
             "perturbations": np.array(
@@ -90,7 +95,7 @@ def get_env_config(input_args: Namespace) -> dict:
                 ]
             ),
         }
-    elif input_args.env == "simple_dir":
+    elif input_args.env in ["simple_dir", "simple_dir_rand"]:
         tmp = np.array([[0, 0], [0.8, 0.8], [-0.8, 0.8], [-0.8, -0.8], [0.8, -0.8]])
         env_config = {
             "context_values": tmp[0],
@@ -105,7 +110,7 @@ def get_env_config(input_args: Namespace) -> dict:
             "perturbations": tmp,
         }
     elif input_args.env == "ant_goal":
-        th = np.array([0, 0.1, -0.1, 0.2, -0.2, 0.5, -0.5, 1, -1, np.pi])
+        th = np.array([0, 0.1, 0.2, 0.5, 1, np.pi])
         tmp = 3 * np.stack([np.cos(th), np.sin(th)], axis=-1)
         env_config = {
             "name": input_args.env,

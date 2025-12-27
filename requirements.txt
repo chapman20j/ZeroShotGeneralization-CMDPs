@@ -8,3 +8,5 @@ scipy==1.14.1
 seaborn==0.13.2
 ray[rllib,tune]==2.44.1
 msgpack-numpy==0.4.8
+jax==0.8.2
+sympy==1.13.1

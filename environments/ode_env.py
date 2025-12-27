@@ -268,8 +268,8 @@ class PendulumGoalAnalytic(gym.Env):
 
 class CartPoleGoalAnalytic(gym.Env):
 
-    context_low = np.array([1.0, 0.01, 0.01, 0.1, -4])
-    context_high = np.array([10, 2.0, 2.0, 2, 4])
+    context_low = np.array([1.0, 0.01, 0.25, 0.1, -4])
+    context_high = np.array([12.0, 2.0, 2.0, 2, 4])
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "render_fps": 50,
